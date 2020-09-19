@@ -22,7 +22,7 @@ jobs:
         with:
           python-version: 3.8
 
-      - name: 获取
+      - name: 获取 萌娘百科词库 生成器
         run: pip install mw2fcitx
 
       - name: 获取 维基百科词库 生成器
