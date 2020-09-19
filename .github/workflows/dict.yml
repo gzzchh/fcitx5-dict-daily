@@ -1,0 +1,72 @@
+name: 构建词库
+
+# 触发条件：在 push 到 master 分支后
+on:
+  push:
+  schedule:
+    - cron: "13 * * * *"
+# 任务
+jobs:
+  build-dict:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v2
+
+      - name: Get current date
+        id: getDate
+        run: echo "::set-output name=date::$(date +'%Y%m%d')"
+
+      - name: 准备 Py 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: 获取
+        run: pip install mw2fcitx
+
+      - name: 获取 维基百科词库 生成器
+        uses: actions/checkout@v2
+        with:
+          repository: felixonmars/fcitx5-pinyin-zhwiki
+          path: zhwiki-dict
+
+      - name: 生成 萌娘百科 词库
+        # 生成的文件是
+        # moegirl.dict
+        # moegirl.dict.yml
+        run: mw2fcitx -c mw2fcitx-config.py
+
+      - name: 生成 维基百科中文版 词库
+        # 生成的文件是
+        # zhwiki.dict
+        # zhwiki.dict.yaml
+        run: cd zhwiki-dict && make && make zhwiki.dict.yaml && cd -
+
+      - name: 收集成品
+        run: chmod +x collect.sh && bash ./collect.sh
+
+      - name: 创建 Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          tag_name: ${{ steps.getDateStep.outputs.date }}
+          release_name: ${{ steps.getDateStep.outputs.datedateOutput }}
+
+      - name: 向 Release 添加文件
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: release-files//*
+          tag: ${{ steps.getDateStep.outputs.datedateOutput }}
+          overwrite: true
+          file_glob: true
+
+      - name: 清理旧的 Reelase
+        uses: dev-drprasad/delete-older-releases@v0.1.0
+        with:
+          keep_latest: 3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
