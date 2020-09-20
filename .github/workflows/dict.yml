@@ -4,7 +4,7 @@ name: 构建词库
 on:
   push:
   schedule:
-    - cron: "13 0 * * *"
+    - cron: "30 7 * * *"
 # 任务
 jobs:
   build-dict:
@@ -56,20 +56,22 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
           tag_name: ${{ steps.getDateStep.outputs.date }}
-          release_name: ${{ steps.getDateStep.outputs.datedateOutput }}
+          # tag_name: ${{ github.ref }}
+          release_name: ${{ steps.getDateStep.outputs.date }}
 
       - name: 向 Release 添加文件
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: release-files//*
-          tag: ${{ steps.getDateStep.outputs.datedateOutput }}
+          tag: ${{ steps.getDateStep.outputs.date }}
           overwrite: true
           file_glob: true
 
       - name: 清理旧的 Reelase
         uses: dev-drprasad/delete-older-releases@v0.1.0
         with:
+          delete_tags: true
           keep_latest: 3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
