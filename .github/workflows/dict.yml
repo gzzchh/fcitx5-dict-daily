@@ -4,7 +4,7 @@ name: 构建词库
 on:
   push:
   schedule:
-    - cron: "13 * * * *"
+    - cron: "13 0 * * *"
 # 任务
 jobs:
   build-dict:
@@ -13,7 +13,7 @@ jobs:
       - name: 检出代码
         uses: actions/checkout@v2
 
-      - name: Get current date
+      - name: 获取当前日期
         id: getDate
         run: echo "::set-output name=date::$(date +'%Y%m%d')"
 
