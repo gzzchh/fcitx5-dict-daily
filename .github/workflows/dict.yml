@@ -23,7 +23,7 @@ jobs:
           python-version: 3.8
 
       - name: 准备 词库转换 依赖
-        run: apt update && apt install libime-bin -y
+        run: apt update && sudo apt install libime-bin -y
 
       - name: 获取 萌娘百科词库 生成器
         run: pip install mw2fcitx
