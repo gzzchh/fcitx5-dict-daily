@@ -55,16 +55,16 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
         with:
-          tag_name: ${{ steps.getDateStep.outputs.date }}
+          tag_name: ${{ steps.getDate.outputs.date }}
           # tag_name: ${{ github.ref }}
-          release_name: ${{ steps.getDateStep.outputs.date }}
+          release_name: ${{ steps.getDate.outputs.date }}
 
       - name: 向 Release 添加文件
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: release-files//*
-          tag: ${{ steps.getDateStep.outputs.date }}
+          tag: ${{ steps.getDate.outputs.date }}
           overwrite: true
           file_glob: true
 
