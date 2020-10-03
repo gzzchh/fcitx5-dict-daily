@@ -15,7 +15,7 @@ jobs:
 
       - name: 获取当前日期
         id: getDate
-        run: echo "::set-output name=date::$(date +'%Y%m%d')"
+        run: echo "::set-output name=date::$(TZ=Asia/Shanghai date +'%Y%m%d')"
 
       - name: 准备 Py 3.8
         uses: actions/setup-python@v2
